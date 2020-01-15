@@ -1,44 +1,54 @@
-from bs4 import BeautifulSoup
-import requests
 import pymongo
 
+import cx_Oracle as oci
+conn_o = oci.connect('admin/1234@192.168.99.100:32764/xe', encoding="utf-8")
+cursor = conn_o.cursor()
+
 conn = pymongo.MongoClient('192.168.99.100',32766)
-db = conn.get_database("book") #db생성
-table = db.get_collection("table1") #colloection 생성
+db = conn.get_database("db1") #db생성
+coll = db.get_collection("20200115") #colloection 생성
+#coll.insert_one({"id":"a", "name":"b","age":3})
 
-"""
-<div class="rank_brand_box">
-    <div class="ranking_num"><span class="num">1</span>위</div>
-    <div class="ranking_tt">
-        <div class="bd_tt"><span class="big_tt">문학동네</span> <br /> 
-       브랜드지수 2,620,536점 <a href="javascript:void(0)" onclick="fn_LayerPublisherScore('#help_PublisherBrandScore1728'); return false;"><img src="//image.aladin.co.kr/img/shop/2012/blet_question.gif" align="absmiddle" ></a><div id="help_PublisherBrandScore1728"></div><br/>
-        </div>      
-    </div>
-"""
+# SELECT * FROM 20200115
+data1 = coll.find({})
+for tmp in data1:
+    del tmp['_id']
+    print(tmp)
+    sql = """
+        INSERT INTO TABLE1(NO, ID, NAME, AGE)
+        VALUES(SEQ_TABLE1_NO.nextval, :id, :name, :age)
+    """
+    cursor.execute(sql, tmp)
+    conn_o.commit()
 
-url = "https://www.aladin.co.kr/publisher/wbest.aspx?CID=50993"
-str = requests.get(url)
-#print(str.text)
+conn_o.close()  # 오라클 연결 끊기
+conn.close()    # 몽고 DB 연결 끊기 
 
-soup = BeautifulSoup(str.text, 'html.parser')
 
-all_divs = soup.find_all("div")
-soup.find_all("div",{"rank_brand_box"})
-all_divs_tit4 = soup.find_all("div",{"rank_brand_box"})
+# # SELECT * FROM 20200115 WHERE ID='a'
+# data2 = coll.find({"id":"a"})
 
-#print(all_divs_tit4)
-for tmp in all_divs_tit4 :        
-    all_p = tmp.find("div",{"ranking_num"})    
-    all_p1 = tmp.find("div",{"ranking_tt"})    
-    find_all_p1 = all_p1.find("span")
-    print(all_p.text)
-    #print(all_p1.text)
-    print(find_all_p1.text)
-    dict1 = dict()
-    dict1['순위']=all_p.text
-    dict1['출판사명']=find_all_p1.text    
-    table.insert_one(dict1)
+# # SELECT ID, NAME FROM 20200115 WHERE ID='a'
+# data3 = coll.find({"id":"a"},{'id':1, 'name':1})
+# for tmp in data3:
+#     print(tmp)
 
-conn.close()
+# # SELECT * FROM TABLE WHERE age > 10 
+# data4 = coll.find({'age':{"$gt":40}})
+# for tmp in data4:
+#     print(tmp)
 
-    
+# # SELECT * FROM TABLE ORDER BY name ASC
+# data5 = coll.find().sort('name',1) # 1(ASC), -1(DESC)
+# for tmp in data5:
+#     print(tmp)
+
+# #SELECT * FROM TABLE WHERE age>=10 AND age<=30 
+# data6 = coll.find({"age":{"$gte":10, "$lte":30}})
+
+# # SELECT COUNT(*) FROM TABLE
+# data7 = coll.find().count()
+# print(data7)
+
+# # SELECT * FROM TABLE WHERE ID='a' or name = 'b'
+# data8 = coll.find({'$or':[{"id":'a'},{"name":'b'}]})
