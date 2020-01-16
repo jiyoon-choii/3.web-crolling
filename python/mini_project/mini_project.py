@@ -21,7 +21,14 @@ for line in rdr:
     # print(line)
     # ['초등학교', '삼척초교', '강원도 삼척시 교동로 43', '강원도 삼척시 당저동 45-1', '37.449424', '
     dict1 = dict()
-    for idx, val in enumerate(line): #[1,2,3,4,5,6] # enumerate ->index, value
+    for idx, val in enumerate(line): #[1,2,3,4,5,6] # enumerate ->index, value 
+        # enumerate(열거하다)
+        # 이 함수는 순서가 있는 자료형(리스트, 튜플, 문자열)을 입력받아 인덱스값에 포함시키는 역할
+        # 쉽게 말하자면 리스트, 튜플, 문자열에 순서를 넣는다고 생각하면 됩니다.
+        # 대부분 순서를 내야하기 때문에 반복문for문과 같이 쓰입니다.
+        # (값 한개당 1번의 반복을 해야하므로)
+
+
         # 0, '초등학교'   / 1, tccc
         # { "시설종류": '초등학교',    ...  }
         if val == "":
