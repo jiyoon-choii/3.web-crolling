@@ -1,5 +1,6 @@
 import csv
 import pymongo
+import pandas as pd 
 
 conn = pymongo.MongoClient('192.168.99.100', 32766)
 db = conn.get_database("db1")

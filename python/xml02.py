@@ -11,6 +11,11 @@ str1 = urlopen(url)
 doc1 = parse(str1)
 print(doc1)
 
+
+# xml  : attrib
+# html : attrs
+
+
 for item in doc1.iterfind('items/item'):
     print(item.attrib)   #<item id="a">
     print(item.findtext("name"))  #<name>a</name>

@@ -7,7 +7,7 @@ cursor = conn.cursor()
 
 url = "http://ihongss.com/json/exam2.json"
 str1 = requests.get(url).text
-data1 = json.loads(str1) #str -> dict
+data1 = json.loads(str1) #str -> dict로 변경 <- 문제 : str 를 dic 타입으로 변경하는 명령어? 
 
 ret = data1['ret']
 ret1 = data1['ret1']
